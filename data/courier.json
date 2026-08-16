@@ -1,0 +1,23 @@
+{
+  "Currency": "INR",
+  "Base Weight": {
+    "Value": 500,
+    "Unit": "grams"
+  },
+  "Rates": {
+    "Rameshwaram": {
+      "State": "Tamil Nadu",
+      "Rate": 50
+    },
+    "Tamil Nadu": {
+      "Except": [
+        "Rameshwaram"
+      ],
+      "Rate": 75
+    },
+    "Other States": {
+      "Country": "India",
+      "Rate": 100
+    }
+  }
+}
