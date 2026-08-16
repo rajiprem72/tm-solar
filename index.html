@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TN-Solar | Solar Lighting Solutions</title>
+
+    <meta name="description" content="TN-Solar - Solar street lights, UFO garden lights, flood lamps, bill board lamps, pillar lamps, bollard lamps, wall lamps and solar lighting accessories.">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f7f9f7;
+            color: #222;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #123d2a;
+            color: white;
+            padding: 18px 20px;
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .tagline {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 14px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #f4c542, #fff3b0);
+            padding: 70px 20px;
+        }
+
+        .hero-inner {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .hero h1 {
+            font-size: 44px;
+            line-height: 1.15;
+            max-width: 720px;
+            color: #123d2a;
+            margin-bottom: 18px;
+        }
+
+        .hero p {
+            max-width: 720px;
+            font-size: 18px;
+            color: #33443a;
+            margin-bottom: 25px;
+        }
+
+        .button {
+            display: inline-block;
+            background: #123d2a;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        section {
+            padding: 55px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #123d2a;
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .section-intro {
+            text-align: center;
+            max-width: 750px;
+            margin: 0 auto 35px;
+            color: #666;
+        }
+
+        .about {
+            background: white;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .category {
+            background: white;
+            border-radius: 10px;
+            padding: 22px;
+            border: 1px solid #e3e8e3;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+        }
+
+        .category h3 {
+            color: #123d2a;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .category p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .highlight {
+            background: #123d2a;
+            color: white;
+        }
+
+        .highlight .section-title {
+            color: white;
+        }
+
+        .product-types {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .product-type {
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .product-type strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .contact {
+            text-align: center;
+            background: #fff;
+        }
+
+        footer {
+            background: #0c281c;
+            color: #ddd;
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 800px) {
+            .header-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav a {
+                margin: 0 7px;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .product-types {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 520px) {
+            .category-grid,
+            .product-types {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 50px 20px;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-inner">
+        <div>
+            <div class="logo">☀ TN-Solar</div>
+            <div class="tagline">Solar Lighting Solutions</div>
+        </div>
+
+        <nav>
+            <a href="#about">About</a>
+            <a href="#products">Products</a>
+            <a href="#categories">Categories</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <h1>Powering Outdoor Spaces with Solar Lighting</h1>
+
+        <p>
+            TN-Solar offers a wide range of solar-powered lighting products,
+            including solar street lights, garden lights, flood lamps,
+            bill board lamps, pillar lamps, bollard lamps, wall lamps
+            and other solar lighting products and accessories.
+        </p>
+
+        <a href="#products" class="button">Explore Our Products</a>
+    </div>
+</section>
+
+<section id="about" class="about">
+    <div class="container">
+        <h2 class="section-title">About TN-Solar</h2>
+
+        <p class="section-intro">
+            TN-Solar is focused on solar lighting solutions for outdoor,
+            residential, commercial and infrastructure applications.
+            Our product catalogue includes multiple models with different
+            power ratings, illumination areas, battery capacities,
+            installation heights and product configurations.
+        </p>
+    </div>
+</section>
+
+<section id="products">
+    <div class="container">
+        <h2 class="section-title">Our Solar Lighting Products</h2>
+
+        <p class="section-intro">
+            Explore our range of solar lighting products designed for
+            different lighting requirements and installation environments.
+        </p>
+
+        <div class="product-types">
+            <div class="product-type">
+                <strong>Solar Street Lights</strong>
+                ABS, semi-integrated and metallic models
+            </div>
+
+            <div class="product-type">
+                <strong>Solar UFO Lights</strong>
+                Garden and decorative UFO lighting
+            </div>
+
+            <div class="product-type">
+                <strong>Solar Flood Lamps</strong>
+                Different power and illumination options
+            </div>
+
+            <div class="product-type">
+                <strong>Solar Bill Board Lamps</strong>
+                Lighting solutions for bill boards
+            </div>
+
+            <div class="product-type">
+                <strong>Solar Pillar Lamps</strong>
+                Outdoor pillar lighting
+            </div>
+
+            <div class="product-type">
+                <strong>Solar Bollard Lamps</strong>
+                Pathway and outdoor lighting
+            </div>
+
+            <div class="product-type">
+                <strong>Solar Wall Lamps</strong>
+                Wall-mounted solar lighting
+            </div>
+
+            <div class="product-type">
+                <strong>Solar Ceiling Lamps</strong>
+                Solar-powered ceiling lighting
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="categories" class="about">
+    <div class="container">
+        <h2 class="section-title">Product Categories</h2>
+
+        <p class="section-intro">
+            Our catalogue is organized into product categories to make it
+            easier to find the right solar lighting solution.
+        </p>
+
+        <div class="category-grid">
+
+            <div class="category">
+                <h3>Solar Street Light - ABS Plastic</h3>
+                <p>ABS plastic solar street light models in multiple power ratings.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Street Light - Semi Integrated Model</h3>
+                <p>Semi-integrated solar street lighting models.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Street Light - Mettalic</h3>
+                <p>Metallic solar street light models with higher-power options.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Project Street Lights</h3>
+                <p>Solar street lighting models intended for larger project applications.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar UFO Lamp</h3>
+                <p>Solar UFO garden lighting models, including multi-colour options.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Bill Board Lamp</h3>
+                <p>Solar lighting products designed for bill board illumination.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Pillar Lamp</h3>
+                <p>Decorative pillar lighting with different designs and power configurations.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Bollard Lamp</h3>
+                <p>Solar bollard lighting for outdoor spaces and pathways.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Wall Lamp</h3>
+                <p>Solar wall-mounted lighting solutions.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Flood Lamp</h3>
+                <p>Solar flood lamps available in different power and illumination levels.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Ceiling Lamp</h3>
+                <p>Solar-powered ceiling lighting products.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Motion Sensor Lamp</h3>
+                <p>Solar lighting with motion-sensing functionality.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Road Studs</h3>
+                <p>Solar-powered road and pathway safety lighting products.</p>
+            </div>
+
+            <div class="category">
+                <h3>Solar Decoration Lamp</h3>
+                <p>Decorative solar lighting products for outdoor applications.</p>
+            </div>
+
+            <div class="category">
+                <h3>Street Light and UFO - Poles</h3>
+                <p>Poles and related accessories for solar street and UFO lights.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="highlight">
+    <div class="container">
+        <h2 class="section-title">Why Solar Lighting?</h2>
+
+        <p class="section-intro" style="color:#dce8df;">
+            Solar lighting uses solar energy to power lighting systems,
+            making it suitable for locations where conventional electrical
+            connections may be difficult or where independent outdoor
+            lighting is required.
+        </p>
+    </div>
+</section>
+
+<section id="contact" class="contact">
+    <div class="container">
+        <h2 class="section-title">TN-Solar</h2>
+
+        <p class="section-intro">
+            Browse our solar lighting catalogue and contact us for
+            product availability, latest pricing and enquiries.
+        </p>
+
+        <a href="#" class="button">Contact Us</a>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 TN-Solar. All Rights Reserved.</p>
+    <p>Solar Lighting Solutions</p>
+</footer>
+
+</body>
+</html>
