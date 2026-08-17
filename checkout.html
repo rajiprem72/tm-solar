@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TM-SOLAR | Checkout</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f6f8f6;color:#222}
+header{background:#123d2a;color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.header-inner{max-width:1150px;margin:auto;min-height:68px;padding:10px 18px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-size:25px;font-weight:800}.brand .tm{color:#D32F2F}.brand .solar{color:#B8860B}.tagline{font-size:12px;color:#ddd;margin-top:2px}
+.back-link{color:#fff;text-decoration:none;font-weight:600;font-size:14px}
+main{max-width:1150px;margin:auto;padding:30px 15px 60px}h1{color:#123d2a;margin:0 0 25px}
+.layout{display:grid;grid-template-columns:1fr 380px;gap:25px;align-items:start}.card{background:#fff;border:1px solid #e1e6e2;border-radius:12px;padding:24px;box-shadow:0 3px 12px rgba(0,0,0,.05);margin-bottom:20px}.card h2{color:#123d2a;margin:0 0 20px;font-size:22px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:flex;flex-direction:column;gap:7px}.full{grid-column:1/-1}label{font-size:14px;font-weight:700;color:#444}.required{color:#c62828}
+input,textarea,select{width:100%;border:1px solid #ccd3ce;border-radius:7px;padding:12px;font-size:15px;font-family:inherit;background:#fff}textarea{min-height:95px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#123d2a;box-shadow:0 0 0 2px rgba(18,61,42,.08)}
+.hint,.note{color:#777;font-size:12px;line-height:1.45}.summary{position:sticky;top:85px}.row{display:flex;justify-content:space-between;gap:15px;padding:10px 0;color:#555}.weight,.courier{color:#123d2a;font-weight:700}
+.grand{border-top:1px solid #ddd;margin-top:10px;padding-top:17px;color:#123d2a;font-size:23px;font-weight:800}
+.items{margin-bottom:18px}.item{display:flex;justify-content:space-between;gap:15px;padding:9px 0;border-bottom:1px solid #eee;font-size:14px}.item:last-child{border-bottom:0}.amount{font-weight:700;white-space:nowrap}
+.courier-info{margin-top:12px;padding:11px;background:#f4f7f4;border-radius:7px;color:#555;font-size:13px;line-height:1.45}
+.pay{width:100%;border:0;background:#123d2a;color:#fff;padding:15px;border-radius:8px;margin-top:20px;font-size:16px;font-weight:700;cursor:pointer}.pay:hover{background:#1b5a3d}
+.back-cart{display:block;text-align:center;margin-top:13px;color:#123d2a;text-decoration:none;font-weight:600;font-size:14px}
+.message{display:none;padding:12px;border-radius:7px;margin-bottom:15px;font-size:14px}.error{display:block;background:#fff0f0;color:#a32020;border:1px solid #f0caca}
+.empty{text-align:center;max-width:600px;margin:60px auto}.empty a{display:inline-block;margin-top:15px;background:#123d2a;color:#fff;padding:12px 20px;border-radius:7px;text-decoration:none}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.summary{position:static}}@media(max-width:600px){.header-inner{padding:10px 12px}.brand{font-size:21px}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.card{padding:18px}main{padding:20px 10px 50px}}
+</style>
+</head>
+<body>
+<header><div class="header-inner">
+<div><div class="brand">☀ <span class="tm">TM</span><span class="solar">-SOLAR</span></div><div class="tagline">Solar Lighting Solutions</div></div>
+<a href="cart.html" class="back-link">← Back to Cart</a>
+</div></header>
+
+<main>
+<h1>Checkout</h1>
+<div id="message" class="message"></div>
+<div id="content"></div>
+</main>
+
+<script>
+const CART_KEY="tmSolarCart";
+const COURIER_URL="data/courier.json";
+let cart=[];
+let courierConfig=null;
+
+const states=["Andaman and Nicobar Islands","Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chandigarh","Chhattisgarh","Dadra and Nagar Haveli and Daman and Diu","Delhi","Goa","Gujarat","Haryana","Himachal Pradesh","Jammu and Kashmir","Jharkhand","Karnataka","Kerala","Ladakh","Lakshadweep","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Puducherry","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal"];
+
+function money(v){return Number(v||0).toLocaleString("en-IN")}
+
+function loadCart(){
+    try{cart=JSON.parse(localStorage.getItem(CART_KEY))||[]}
+    catch(e){cart=[]}
+}
+
+function totals(){
+    let productTotal=0,totalWeight=0,totalQuantity=0;
+    cart.forEach(item=>{
+        const q=Number(item.quantity||1);
+        productTotal+=Number(item.MRP||0)*q;
+        totalWeight+=Number(item.NetWeight||0)*q;
+        totalQuantity+=q;
+    });
+    return {productTotal,totalWeight,totalQuantity};
+}
+
+function courier(totalWeightKg,address,state){
+    const base=Number(courierConfig["Base Weight"].Value);
+    const slabs=Math.max(1,Math.ceil((totalWeightKg*1000)/base));
+    const a=String(address||"").toLowerCase();
+    const s=String(state||"").toLowerCase();
+    let rate,description;
+    if(s==="tamil nadu" && a.includes("rameshwaram")){
+        rate=Number(courierConfig.Rates.Rameshwaram.Rate);
+        description="Rameshwaram, Tamil Nadu";
+    }else if(s==="tamil nadu"){
+        rate=Number(courierConfig.Rates["Tamil Nadu"].Rate);
+        description="Tamil Nadu - Other Locations";
+    }else{
+        rate=Number(courierConfig.Rates["Other States"].Rate);
+        description="Other Indian State";
+    }
+    return {rate,slabs,base,charge:rate*slabs,description};
+}
+
+function showError(text){
+    const m=document.getElementById("message");
+    m.className="message error";m.textContent=text;
+    window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function render(){
+    const c=document.getElementById("content");
+    if(!cart.length){
+        c.innerHTML='<div class="card empty"><h2>Your cart is empty</h2><p>Please select some solar products before checkout.</p><a href="products.html">Browse Products</a></div>';
+        return;
+    }
+
+    const t=totals();
+    let items="";
+    cart.forEach(item=>{
+        const q=Number(item.quantity||1);
+        items+=`<div class="item"><span>${item.Model} × ${q}</span><span class="amount">₹${money(Number(item.MRP||0)*q)}</span></div>`;
+    });
+
+    c.innerHTML=`
+    <div class="layout">
+      <div>
+        <div class="card">
+          <h2>Customer Details</h2>
+          <div class="form-grid">
+            <div class="field"><label>Full Name <span class="required">*</span></label><input id="fullName" autocomplete="name" placeholder="Enter your full name"></div>
+            <div class="field"><label>Mobile Number <span class="required">*</span></label><input id="mobile" type="tel" maxlength="10" inputmode="numeric" autocomplete="tel" placeholder="10 digit mobile number"></div>
+            <div class="field full"><label>Email ID <span class="required">*</span></label><input id="email" type="email" autocomplete="email" placeholder="Enter your email address"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Delivery Address</h2>
+          <div class="form-grid">
+            <div class="field full"><label>Address <span class="required">*</span></label><textarea id="address" autocomplete="street-address" placeholder="House / Door No., Street, Area, Locality"></textarea><div class="hint">For the current tentative courier rules, include Rameshwaram in the address when applicable.</div></div>
+            <div class="field"><label>City / Town <span class="required">*</span></label><input id="city" autocomplete="address-level2"></div>
+            <div class="field"><label>District</label><input id="district"></div>
+            <div class="field"><label>State <span class="required">*</span></label><select id="state"><option value="">Select State</option>${states.map(s=>`<option>${s}</option>`).join("")}</select></div>
+            <div class="field"><label>Pincode <span class="required">*</span></label><input id="pincode" maxlength="6" inputmode="numeric" autocomplete="postal-code" placeholder="6 digit pincode"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card summary">
+        <h2>Order Summary</h2>
+        <div class="items">${items}</div>
+        <div class="row"><span>Products</span><strong>${t.totalQuantity}</strong></div>
+        <div class="row weight"><span>Total Weight</span><strong id="weight">${t.totalWeight.toFixed(3)} KG</strong></div>
+        <div class="row"><span>Product Total</span><strong>₹${money(t.productTotal)}</strong></div>
+        <div class="row courier"><span>Courier</span><strong id="courier">Enter address</strong></div>
+        <div class="courier-info" id="courierInfo">Courier charge will be calculated after you select the state.</div>
+        <div class="row grand"><span>Grand Total</span><span id="grand">₹${money(t.productTotal)}</span></div>
+        <button class="pay" id="payButton">Proceed to Payment</button>
+        <a class="back-cart" href="cart.html">← Back to Cart</a>
+        <div class="note" style="margin-top:15px">Current courier rates are tentative and are loaded from courier.json.</div>
+      </div>
+    </div>`;
+
+    document.getElementById("address").addEventListener("input",updateCourier);
+    document.getElementById("state").addEventListener("change",updateCourier);
+    document.getElementById("payButton").addEventListener("click",pay);
+}
+
+function updateCourier(){
+    if(!courierConfig)return;
+    const state=document.getElementById("state").value;
+    const address=document.getElementById("address").value;
+    const t=totals();
+    if(!state){
+        document.getElementById("courier").textContent="Select state";
+        document.getElementById("courierInfo").textContent="Select your state to calculate the courier charge.";
+        document.getElementById("grand").textContent="₹"+money(t.productTotal);
+        return;
+    }
+    const x=courier(t.totalWeight,address,state);
+    document.getElementById("courier").textContent="₹"+money(x.charge);
+    document.getElementById("courierInfo").textContent=`${x.description} • ${x.slabs} × ${x.base}g slab × ₹${x.rate} = ₹${money(x.charge)}`;
+    document.getElementById("grand").textContent="₹"+money(t.productTotal+x.charge);
+}
+
+function valid(){
+    const name=document.getElementById("fullName").value.trim();
+    const mobile=document.getElementById("mobile").value.trim();
+    const email=document.getElementById("email").value.trim();
+    const address=document.getElementById("address").value.trim();
+    const city=document.getElementById("city").value.trim();
+    const state=document.getElementById("state").value;
+    const pin=document.getElementById("pincode").value.trim();
+
+    if(!name)return showError("Please enter your full name."),false;
+    if(!/^[0-9]{10}$/.test(mobile))return showError("Please enter a valid 10 digit mobile number."),false;
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return showError("Please enter a valid email address."),false;
+    if(!address)return showError("Please enter your delivery address."),false;
+    if(!city)return showError("Please enter your city or town."),false;
+    if(!state)return showError("Please select your state."),false;
+    if(!/^[0-9]{6}$/.test(pin))return showError("Please enter a valid 6 digit pincode."),false;
+    return true;
+}
+
+function pay(){
+    if(!valid())return;
+    updateCourier();
+    const t=totals();
+    const x=courier(t.totalWeight,document.getElementById("address").value,document.getElementById("state").value);
+    alert("Checkout is ready.\n\nProduct Total: ₹"+money(t.productTotal)+"\nCourier: ₹"+money(x.charge)+"\nGrand Total: ₹"+money(t.productTotal+x.charge)+"\n\nRazorpay will be connected next.");
+}
+
+loadCart();
+if(!cart.length){render()}else{
+    fetch(COURIER_URL).then(r=>{if(!r.ok)throw new Error("Could not load courier.json");return r.json()})
+    .then(data=>{courierConfig=data;render()})
+    .catch(err=>{
+        console.error(err);
+        document.getElementById("content").innerHTML='<div class="card empty"><h2>Unable to load courier configuration</h2><p>Please check that <strong>data/courier.json</strong> exists in the repository.</p><a href="cart.html">Back to Cart</a></div>';
+    });
+}
+</script>
+</body>
+</html>
