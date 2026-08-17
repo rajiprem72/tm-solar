@@ -393,184 +393,526 @@
 </div>
 
 <script>
+
     /*
-     * Expected folder structure:
-     *
-     * tm-solar/
-     * ├── products.html
-     * ├── data/
-     * │   └── hardoll_price_catalogue_by_category.json
-     * └── images/
-     *     ├── SSL-ABS-50W.png
-     *     ├── SSL-ABS-100W.png
-     *     └── ...
-     *
-     * If you put the JSON in another location, change JSON_URL below.
+     * TM-SOLAR Product Catalogue
      */
-    const CART_KEY = "tmSolarCart";
-    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-    
-    const JSON_URL = "data/hardoll_price_catalogue_by_category.json";
+
+    const JSON_URL = "hardoll_price_catalogue_with_net_weight.json";
     const IMAGE_FOLDER = "images/";
+    const CART_KEY = "tmSolarCart";
 
-    const catalogue = document.getElementById("catalogue");
-    const modal = document.getElementById("productModal");
-    const modalImage = document.getElementById("modalImage");
-    const modalCategory = document.getElementById("modalCategory");
-    const modalName = document.getElementById("modalName");
-    const modalModel = document.getElementById("modalModel");
-    const modalSpecifications = document.getElementById("modalSpecifications");
-    const modalMRP = document.getElementById("modalMRP");
-    const addCartButton = document.getElementById("addCartButton");
-    const cartCount = document.getElementById("cartCount");
-    const cartMessage = document.getElementById("cartMessage");
-
+    /*
+     * Read existing cart from browser storage.
+     */
+    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
     let selectedProduct = null;
-    
-    
-    
+
+
+    /*
+     * Page elements
+     */
+    const catalogue = document.getElementById("catalogue");
+
+    const modal = document.getElementById("productModal");
+
+    const modalImage =
+        document.getElementById("modalImage");
+
+    const modalCategory =
+        document.getElementById("modalCategory");
+
+    const modalName =
+        document.getElementById("modalName");
+
+    const modalModel =
+        document.getElementById("modalModel");
+
+    const modalSpecifications =
+        document.getElementById("modalSpecifications");
+
+    const modalMRP =
+        document.getElementById("modalMRP");
+
+    const addCartButton =
+        document.getElementById("addCartButton");
+
+    const cartCount =
+        document.getElementById("cartCount");
+
+    const cartMessage =
+        document.getElementById("cartMessage");
+
+
+    /*
+     * Format price in Indian numbering format.
+     */
     function formatPrice(value) {
-        return Number(value).toLocaleString("en-IN");
+
+        return Number(value || 0)
+            .toLocaleString("en-IN");
+
     }
 
+
+    /*
+     * Build image path.
+     */
     function imagePath(filename) {
-        return IMAGE_FOLDER + encodeURIComponent(filename);
+
+        return IMAGE_FOLDER +
+            encodeURIComponent(filename);
+
     }
 
+
+    /*
+     * Update Cart count in the header.
+     */
+    function updateCartCount() {
+
+        let totalQuantity = 0;
+
+        cart.forEach(function(item) {
+
+            totalQuantity +=
+                Number(item.quantity || 1);
+
+        });
+
+        cartCount.textContent = totalQuantity;
+
+    }
+
+
+    /*
+     * Create individual product card.
+     */
     function createProductCard(product, categoryName) {
-        const card = document.createElement("div");
+
+        const card =
+            document.createElement("div");
+
         card.className = "product-card";
-        card.title = "Click to view product details";
 
-        const img = document.createElement("img");
-        img.src = imagePath(product.Image);
-        img.alt = product.Model;
-        img.loading = "lazy";
+        card.title =
+            "Click to view product details";
 
-        img.onerror = function () {
-            card.innerHTML = '<div class="no-image">Image not found<br><br>' +
-                product.Model + '</div>';
+
+        const img =
+            document.createElement("img");
+
+        img.src =
+            imagePath(product.Image);
+
+        img.alt =
+            product.Model;
+
+        img.loading =
+            "lazy";
+
+
+        img.onerror = function() {
+
+            card.innerHTML =
+                '<div class="no-image">' +
+                'Image not found<br><br>' +
+                product.Model +
+                '</div>';
+
         };
+
 
         card.appendChild(img);
 
-        card.addEventListener("click", function () {
-            openProduct(product, categoryName);
-        });
+
+        card.addEventListener(
+            "click",
+            function() {
+
+                openProduct(
+                    product,
+                    categoryName
+                );
+
+            }
+        );
+
 
         return card;
+
     }
 
+
+    /*
+     * Display all categories and products.
+     */
     function renderCatalogue(data) {
+
         catalogue.innerHTML = "";
 
-        data.Categories.forEach(category => {
-            const section = document.createElement("section");
-            section.className = "category";
 
-            const heading = document.createElement("h2");
-            heading.className = "category-title";
-            heading.textContent = category.Category;
+        data.Categories.forEach(
+            function(category) {
 
-            const grid = document.createElement("div");
-            grid.className = "product-grid";
+                const section =
+                    document.createElement("section");
 
-            category.Products.forEach(product => {
-                grid.appendChild(createProductCard(product, category.Category));
-            });
+                section.className =
+                    "category";
 
-            section.appendChild(heading);
-            section.appendChild(grid);
-            catalogue.appendChild(section);
-        });
+
+                const heading =
+                    document.createElement("h2");
+
+                heading.className =
+                    "category-title";
+
+                heading.textContent =
+                    category.Category;
+
+
+                const grid =
+                    document.createElement("div");
+
+                grid.className =
+                    "product-grid";
+
+
+                category.Products.forEach(
+                    function(product) {
+
+                        grid.appendChild(
+                            createProductCard(
+                                product,
+                                category.Category
+                            )
+                        );
+
+                    }
+                );
+
+
+                section.appendChild(
+                    heading
+                );
+
+                section.appendChild(
+                    grid
+                );
+
+
+                catalogue.appendChild(
+                    section
+                );
+
+            }
+        );
+
     }
 
-    function openProduct(product, categoryName) {
-        selectedProduct = product;
 
-        modalCategory.textContent = categoryName;
-        modalName.textContent = product.Name;
-        modalModel.textContent = product.Model;
-        modalSpecifications.textContent = product.Specifications;
-        modalMRP.textContent = formatPrice(product.MRP);
+    /*
+     * Open product details.
+     */
+    function openProduct(
+        product,
+        categoryName
+    ) {
 
-        modalImage.src = imagePath(product.Image);
-        modalImage.alt = product.Model;
+        selectedProduct =
+            product;
 
-        cartMessage.textContent = "";
+
+        modalCategory.textContent =
+            categoryName;
+
+        modalName.textContent =
+            product.Name;
+
+        modalModel.textContent =
+            product.Model;
+
+        modalSpecifications.textContent =
+            product.Specifications;
+
+        modalMRP.textContent =
+            formatPrice(product.MRP);
+
+
+        modalImage.src =
+            imagePath(product.Image);
+
+        modalImage.alt =
+            product.Model;
+
+
+        cartMessage.textContent =
+            "";
+
 
         modal.classList.add("show");
-        document.body.style.overflow = "hidden";
+
+        document.body.style.overflow =
+            "hidden";
+
     }
 
+
+    /*
+     * Close product details.
+     */
     function closeProduct() {
+
         modal.classList.remove("show");
-        document.body.style.overflow = "";
+
+        document.body.style.overflow =
+            "";
+
     }
 
-    addCartButton.addEventListener("click", function () {
-        if (!selectedProduct) return;
 
-        cart.push({
-            Model: selectedProduct.Model,
-            Name: selectedProduct.Name,
-            MRP: selectedProduct.MRP,
-            Image: selectedProduct.Image
-        });
+    /*
+     * ADD TO CART
+     */
+    addCartButton.addEventListener(
+        "click",
+        function() {
 
-        cartCount.textContent = cart.length;
-        cartMessage.textContent =
-            selectedProduct.Model + " added to cart.";
-    });
-        localStorage.setItem(
-        CART_KEY,
-        JSON.stringify(cart)
-    );
+            if (!selectedProduct) {
 
-    updateCartCount();
-});
+                return;
 
-    document.getElementById("closeModal").addEventListener("click", closeProduct);
-
-    modal.addEventListener("click", function (event) {
-        if (event.target === modal) {
-            closeProduct();
-        }
-    });
-
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") {
-            closeProduct();
-        }
-    });
-
-   document.getElementById("cartButton").addEventListener(
-    "click",
-    function () {
-        window.location.href = "cart.html";
-    }
-    );
-    
-    fetch(JSON_URL)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Could not load JSON catalogue.");
             }
-            return response.json();
-        })
-        .then(data => {
-            renderCatalogue(data);
-        })
-        .catch(error => {
-            console.error(error);
-            catalogue.innerHTML =
-                '<div class="error">' +
-                'Unable to load the product catalogue.<br><br>' +
-                'Please check that the JSON file is available at:<br>' +
-                '<strong>' + JSON_URL + '</strong>' +
-                '</div>';
-        });
-</script>
 
+
+            /*
+             * Check whether product already
+             * exists in the cart.
+             */
+            const existingItem =
+                cart.find(
+                    function(item) {
+
+                        return item.Model ===
+                            selectedProduct.Model;
+
+                    }
+                );
+
+
+            if (existingItem) {
+
+                /*
+                 * Increase quantity.
+                 */
+                existingItem.quantity =
+                    Number(
+                        existingItem.quantity || 1
+                    ) + 1;
+
+
+                cartMessage.textContent =
+                    selectedProduct.Model +
+                    " quantity increased to " +
+                    existingItem.quantity +
+                    ".";
+
+            }
+
+            else {
+
+                /*
+                 * Add new product.
+                 */
+                cart.push({
+
+                    Model:
+                        selectedProduct.Model,
+
+                    Name:
+                        selectedProduct.Name,
+
+                    Specifications:
+                        selectedProduct.Specifications,
+
+                    MRP:
+                        Number(
+                            selectedProduct.MRP || 0
+                        ),
+
+                    Image:
+                        selectedProduct.Image,
+
+                    NetWeight:
+                        Number(
+                            selectedProduct["Net Weight"] || 0
+                        ),
+
+                    quantity:
+                        1
+
+                });
+
+
+                cartMessage.textContent =
+                    selectedProduct.Model +
+                    " added to cart.";
+
+            }
+
+
+            /*
+             * SAVE CART
+             *
+             * This is the important part.
+             */
+            localStorage.setItem(
+                CART_KEY,
+                JSON.stringify(cart)
+            );
+
+
+            /*
+             * Update cart number.
+             */
+            updateCartCount();
+
+        }
+    );
+
+
+    /*
+     * Close button.
+     */
+    document.getElementById(
+        "closeModal"
+    ).addEventListener(
+        "click",
+        closeProduct
+    );
+
+
+    /*
+     * Close modal when clicking outside it.
+     */
+    modal.addEventListener(
+        "click",
+        function(event) {
+
+            if (event.target === modal) {
+
+                closeProduct();
+
+            }
+
+        }
+    );
+
+
+    /*
+     * Close modal with ESC key.
+     */
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Escape") {
+
+                closeProduct();
+
+            }
+
+        }
+    );
+
+
+    /*
+     * CART BUTTON
+     *
+     * Open cart.html.
+     */
+    document.getElementById(
+        "cartButton"
+    ).addEventListener(
+        "click",
+        function() {
+
+            window.location.href =
+                "cart.html";
+
+        }
+    );
+
+
+    /*
+     * Display existing cart quantity
+     * when the page opens.
+     */
+    updateCartCount();
+
+
+    /*
+     * LOAD PRODUCT JSON
+     */
+    fetch(JSON_URL)
+
+        .then(
+            function(response) {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Could not load JSON catalogue."
+                    );
+
+                }
+
+                return response.json();
+
+            }
+        )
+
+        .then(
+            function(data) {
+
+                renderCatalogue(data);
+
+            }
+        )
+
+        .catch(
+            function(error) {
+
+                console.error(
+                    "TM-SOLAR Catalogue Error:",
+                    error
+                );
+
+
+                catalogue.innerHTML =
+                    '<div class="error">' +
+
+                    'Unable to load the product catalogue.' +
+
+                    '<br><br>' +
+
+                    'Please check that the JSON file is available at:<br>' +
+
+                    '<strong>' +
+                    JSON_URL +
+                    '</strong>' +
+
+                    '<br><br>' +
+
+                    'Open browser Developer Tools (F12) → Console ' +
+                    'for more information.' +
+
+                    '</div>';
+
+            }
+        );
+
+</script>
 </body>
 </html>
