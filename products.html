@@ -536,7 +536,13 @@
         }
     });
 
-   
+   document.getElementById("cartButton").addEventListener(
+    "click",
+    function () {
+        window.location.href = "cart.html";
+    }
+    );
+    
     fetch(JSON_URL)
         .then(response => {
             if (!response.ok) {
