@@ -407,6 +407,9 @@
      *
      * If you put the JSON in another location, change JSON_URL below.
      */
+    const CART_KEY = "tmSolarCart";
+    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    
     const JSON_URL = "data/hardoll_price_catalogue_by_category.json";
     const IMAGE_FOLDER = "images/";
 
@@ -521,6 +524,13 @@
         cartMessage.textContent =
             selectedProduct.Model + " added to cart.";
     });
+        localStorage.setItem(
+        CART_KEY,
+        JSON.stringify(cart)
+    );
+
+    updateCartCount();
+});
 
     document.getElementById("closeModal").addEventListener("click", closeProduct);
 
