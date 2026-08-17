@@ -536,11 +536,7 @@
         }
     });
 
-    document.getElementById("cartButton").addEventListener("click", function () {
-        alert("Cart items: " + cart.length +
-              "\\n\\nCart functionality can be connected later.");
-    });
-
+   
     fetch(JSON_URL)
         .then(response => {
             if (!response.ok) {
