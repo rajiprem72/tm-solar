@@ -1,0 +1,13 @@
+{
+  "Currency": "INR",
+  "Coupons": [
+    {
+      "Code": "RAJAYOGA",
+      "DiscountType": "FLAT",
+      "DiscountValue": 250,
+      "MinimumOrderValue": 0,
+      "Active": true,
+      "Description": "Flat ₹250 discount"
+    }
+  ]
+}
