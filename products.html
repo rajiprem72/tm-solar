@@ -423,7 +423,10 @@
     const cartMessage = document.getElementById("cartMessage");
 
     let selectedProduct = null;
-    let cart = [];
+    
+    const CART_KEY = "tmSolarCart";
+    
+    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
 
     function formatPrice(value) {
         return Number(value).toLocaleString("en-IN");
