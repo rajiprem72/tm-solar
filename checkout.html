@@ -23,6 +23,157 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#123d2a;box-sh
 .back-cart{display:block;text-align:center;margin-top:13px;color:#123d2a;text-decoration:none;font-weight:600;font-size:14px}
 .message{display:none;padding:12px;border-radius:7px;margin-bottom:15px;font-size:14px}.error{display:block;background:#fff0f0;color:#a32020;border:1px solid #f0caca}
 .empty{text-align:center;max-width:600px;margin:60px auto}.empty a{display:inline-block;margin-top:15px;background:#123d2a;color:#fff;padding:12px 20px;border-radius:7px;text-decoration:none}
+.review{
+    display:none;
+}
+
+.review.show{
+    display:block;
+}
+
+.review-box{
+    border:1px solid #dce5de;
+    border-radius:9px;
+    overflow:hidden;
+}
+
+.review-section{
+    padding:16px;
+    border-bottom:1px solid #e8ece9;
+}
+
+.review-section:last-child{
+    border-bottom:0;
+}
+
+.review-title{
+    font-weight:800;
+    color:#123d2a;
+    margin-bottom:10px;
+}
+
+.review-line{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding:6px 0;
+    font-size:14px;
+}
+
+.review-line small{
+    color:#777;
+}
+
+.review-address{
+    line-height:1.6;
+    color:#555;
+    font-size:14px;
+}
+
+.coupon-area{
+    margin-top:16px;
+    padding:14px;
+    background:#f8faf8;
+    border:1px solid #e1e8e2;
+    border-radius:8px;
+}
+
+.coupon-title{
+    font-weight:800;
+    color:#123d2a;
+    margin-bottom:7px;
+}
+
+.coupon-box{
+    display:flex;
+    gap:8px;
+    margin-top:8px;
+}
+
+.coupon-box input{
+    flex:1;
+    text-transform:uppercase;
+}
+
+.coupon-btn{
+    border:0;
+    background:#555;
+    color:#fff;
+    padding:0 16px;
+    border-radius:7px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.coupon-btn:hover{
+    background:#333;
+}
+
+.coupon-message{
+    font-size:13px;
+    margin-top:8px;
+    min-height:18px;
+}
+
+.coupon-success{
+    color:#188038;
+}
+
+.coupon-error{
+    color:#c62828;
+}
+
+.confirm-box{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    margin-top:18px;
+    padding:14px;
+    background:#f8faf8;
+    border-radius:8px;
+}
+
+.confirm-box input{
+    width:18px;
+    height:18px;
+    margin-top:2px;
+}
+
+.confirm-box label{
+    font-weight:600;
+    line-height:1.5;
+}
+
+.pay:disabled{
+    background:#aaa;
+    cursor:not-allowed;
+}
+
+.edit-btn{
+    width:100%;
+    border:1px solid #123d2a;
+    background:#fff;
+    color:#123d2a;
+    padding:12px;
+    border-radius:8px;
+    margin-top:10px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.discount{
+    color:#188038;
+    font-weight:700;
+}
+
+.final-total{
+    text-align:right;
+    font-size:24px;
+    font-weight:800;
+    color:#123d2a;
+    margin-top:12px;
+}
 @media(max-width:850px){.layout{grid-template-columns:1fr}.summary{position:static}}@media(max-width:600px){.header-inner{padding:10px 12px}.brand{font-size:21px}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.card{padding:18px}main{padding:20px 10px 50px}}
 </style>
 </head>
@@ -40,9 +191,18 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#123d2a;box-sh
 
 <script>
 const CART_KEY="tmSolarCart";
+
 const COURIER_URL="data/courier.json";
+
+const COUPON_URL="data/coupons.json";
+
 let cart=[];
+
 let courierConfig=null;
+
+let couponConfig=null;
+
+let appliedCoupon=null;
 
 const states=["Andaman and Nicobar Islands","Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chandigarh","Chhattisgarh","Dadra and Nagar Haveli and Daman and Diu","Delhi","Goa","Gujarat","Haryana","Himachal Pradesh","Jammu and Kashmir","Jharkhand","Karnataka","Kerala","Ladakh","Lakshadweep","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Puducherry","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal"];
 
@@ -64,25 +224,236 @@ function totals(){
     return {productTotal,totalWeight,totalQuantity};
 }
 
-function courier(totalWeightKg,address,state){
-    const base=Number(courierConfig["Base Weight"].Value);
-    const slabs=Math.max(1,Math.ceil((totalWeightKg*1000)/base));
-    const a=String(address||"").toLowerCase();
-    const s=String(state||"").toLowerCase();
-    let rate,description;
-    if(s==="tamil nadu" && a.includes("rameshwaram")){
-        rate=Number(courierConfig.Rates.Rameshwaram.Rate);
-        description="Rameshwaram, Tamil Nadu";
-    }else if(s==="tamil nadu"){
-        rate=Number(courierConfig.Rates["Tamil Nadu"].Rate);
-        description="Tamil Nadu - Other Locations";
-    }else{
-        rate=Number(courierConfig.Rates["Other States"].Rate);
-        description="Other Indian State";
+
+function courier(address, state){
+
+    const s = String(state || "").trim();
+
+    if (!s) {
+
+        return {
+            rate: 0,
+            charge: 0,
+            description: "Select state"
+        };
+
     }
-    return {rate,slabs,base,charge:rate*slabs,description};
+
+    // Tamil Nadu
+    if (s === "Tamil Nadu") {
+
+        return {
+            rate: 60,
+            charge: 60,
+            description: "Tamil Nadu — ₹60 per bill"
+        };
+
+    }
+
+    // Kerala, Karnataka, Andhra Pradesh,
+    // Telangana
+    const selectedStates = [
+        "Kerala",
+        "Karnataka",
+        "Andhra Pradesh",
+        "Telangana"
+    ];
+
+    if (selectedStates.includes(s)) {
+
+        return {
+            rate: 120,
+            charge: 120,
+            description: s + " — ₹120 per bill"
+        };
+
+    }
+
+    // All other Indian states
+    return {
+
+        rate: 250,
+        charge: 250,
+        description: s + " — ₹250 per bill"
+
+    };
+
 }
 
+
+function findCoupon(code){
+
+    if (!couponConfig || !code) {
+        return null;
+    }
+
+    const enteredCode =
+        String(code)
+            .trim()
+            .toUpperCase();
+
+    const coupons =
+        couponConfig.Coupons || [];
+
+    return coupons.find(coupon => {
+
+        return (
+            String(coupon.Code || "")
+                .trim()
+                .toUpperCase()
+            === enteredCode
+            &&
+            coupon.Active === true
+        );
+
+    }) || null;
+
+}
+
+
+function calculateCouponDiscount(
+    coupon,
+    productTotal
+){
+
+    if (!coupon) {
+        return 0;
+    }
+
+    const minimumOrder =
+        Number(
+            coupon.MinimumOrderValue || 0
+        );
+
+    if (
+        productTotal < minimumOrder
+    ) {
+        return 0;
+    }
+
+    if (
+        String(
+            coupon.DiscountType || ""
+        ).toUpperCase() === "FLAT"
+    ){
+
+        return Math.min(
+            Number(
+                coupon.DiscountValue || 0
+            ),
+            productTotal
+        );
+
+    }
+
+    return 0;
+
+}
+
+
+function applyCoupon(){
+
+    const input =
+        document.getElementById(
+            "couponCode"
+        );
+
+    const message =
+        document.getElementById(
+            "couponMessage"
+        );
+
+    const code =
+        input.value.trim();
+
+
+    appliedCoupon = null;
+
+
+    if (!code){
+
+        message.className =
+            "coupon-message coupon-error";
+
+        message.textContent =
+            "Please enter a coupon code.";
+
+        updateFinalReview();
+
+        return;
+
+    }
+
+
+    const coupon =
+        findCoupon(code);
+
+
+    if (!coupon){
+
+        message.className =
+            "coupon-message coupon-error";
+
+        message.textContent =
+            "Invalid coupon code.";
+
+        updateFinalReview();
+
+        return;
+
+    }
+
+
+    const t = totals();
+
+
+    const discount =
+        calculateCouponDiscount(
+            coupon,
+            t.productTotal
+        );
+
+
+    if (discount <= 0){
+
+        message.className =
+            "coupon-message coupon-error";
+
+        message.textContent =
+            "This coupon is not applicable to this order.";
+
+        updateFinalReview();
+
+        return;
+
+    }
+
+
+    appliedCoupon = {
+
+        Code: coupon.Code,
+
+        DiscountType:
+            coupon.DiscountType,
+
+        DiscountValue:
+            discount
+
+    };
+
+
+    message.className =
+        "coupon-message coupon-success";
+
+    message.textContent =
+        "Coupon discount applied successfully.";
+
+
+    updateFinalReview();
+
+}    
+
+    
 function showError(text){
     const m=document.getElementById("message");
     m.className="message error";m.textContent=text;
@@ -126,17 +497,121 @@ function render(){
           </div>
         </div>
       </div>
+               <div class="card review" id="reviewCard">
 
+            <h2>Final Order Review</h2>
+
+            <p class="note">
+                Please review your products, charges and
+                delivery details carefully before proceeding
+                to payment.
+            </p>
+
+            <div id="reviewContent"
+                 class="review-box">
+            </div>
+
+            <div class="coupon-area">
+
+                <div class="coupon-title">
+                    Do you have a coupon code?
+                </div>
+
+                <div class="hint">
+                    Enter your privileged coupon code
+                    if you have one.
+                </div>
+
+                <div class="coupon-box">
+
+                    <input
+                        id="couponCode"
+                        placeholder="Enter coupon code"
+                        autocomplete="off"
+                    >
+
+                    <button
+                        type="button"
+                        class="coupon-btn"
+                        id="applyCoupon"
+                    >
+                        Apply
+                    </button>
+
+                </div>
+
+                <div
+                    id="couponMessage"
+                    class="coupon-message">
+                </div>
+
+            </div>
+
+            <div class="confirm-box">
+
+                <input
+                    type="checkbox"
+                    id="confirmOrder"
+                >
+
+                <label for="confirmOrder">
+
+                    I confirm that the products,
+                    quantities, charges and delivery
+                    address shown above are correct.
+
+                </label>
+
+            </div>
+
+            <button
+                class="pay"
+                id="payButton"
+                disabled
+            >
+                Proceed to Razorpay
+            </button>
+
+            <button
+                type="button"
+                class="edit-btn"
+                id="editOrder"
+            >
+                ← Edit Order Details
+            </button>
+
+        </div> 
       <div class="card summary">
         <h2>Order Summary</h2>
         <div class="items">${items}</div>
         <div class="row"><span>Products</span><strong>${t.totalQuantity}</strong></div>
         <div class="row weight"><span>Total Weight</span><strong id="weight">${t.totalWeight.toFixed(3)} KG</strong></div>
-        <div class="row"><span>Product Total</span><strong>₹${money(t.productTotal)}</strong></div>
-        <div class="row courier"><span>Courier</span><strong id="courier">Enter address</strong></div>
-        <div class="courier-info" id="courierInfo">Courier charge will be calculated after you select the state.</div>
-        <div class="row grand"><span>Grand Total</span><span id="grand">₹${money(t.productTotal)}</span></div>
-        <button class="pay" id="payButton">Proceed to Payment</button>
+<div class="row">
+    <span>Product Total (incl. GST)</span>
+    <strong>
+        ₹${money(t.productTotal)}
+    </strong>
+</div>
+
+<div class="row courier">
+    <span>Courier Charges</span>
+    <strong id="courier">
+        Select state
+    </strong>
+</div>
+<div class="courier-info" id="courierInfo">
+    Select your state to calculate the courier charge.
+</div>
+
+<div class="row grand">
+    <span>Amount Payable</span>
+    <span id="grand">
+        ₹${money(t.productTotal)}
+    </span>
+</div>
+<button class="pay" id="reviewButton">
+    Review Order Before Payment
+</button>
         <a class="back-cart" href="cart.html">← Back to Cart</a>
         <div class="note" style="margin-top:15px">Current courier rates are tentative and are loaded from courier.json.</div>
       </div>
@@ -147,23 +622,56 @@ function render(){
     document.getElementById("payButton").addEventListener("click",pay);
 }
 
-function updateCourier(){
-    if(!courierConfig)return;
-    const state=document.getElementById("state").value;
-    const address=document.getElementById("address").value;
-    const t=totals();
-    if(!state){
-        document.getElementById("courier").textContent="Select state";
-        document.getElementById("courierInfo").textContent="Select your state to calculate the courier charge.";
-        document.getElementById("grand").textContent="₹"+money(t.productTotal);
-        return;
-    }
-    const x=courier(t.totalWeight,address,state);
-    document.getElementById("courier").textContent="₹"+money(x.charge);
-    document.getElementById("courierInfo").textContent=`${x.description} • ${x.slabs} × ${x.base}g slab × ₹${x.rate} = ₹${money(x.charge)}`;
-    document.getElementById("grand").textContent="₹"+money(t.productTotal+x.charge);
-}
 
+function updateCourier(){
+
+    if (!courierConfig) return;
+
+    const state =
+        document.getElementById("state").value;
+
+    const address =
+        document.getElementById("address").value;
+
+    const t = totals();
+
+    if (!state) {
+
+        document.getElementById("courier")
+            .textContent = "Select state";
+
+        document.getElementById("courierInfo")
+            .textContent =
+            "Select your state to calculate the courier charge.";
+
+        document.getElementById("grand")
+            .textContent =
+            "₹" + money(t.productTotal);
+
+        return;
+
+    }
+
+    const x =
+        courier(address, state);
+
+    document.getElementById("courier")
+        .textContent =
+        "₹" + money(x.charge);
+
+    document.getElementById("courierInfo")
+        .textContent =
+        x.description;
+
+    document.getElementById("grand")
+        .textContent =
+        "₹" +
+        money(
+            t.productTotal + x.charge
+        );
+
+}
+    
 function valid(){
     const name=document.getElementById("fullName").value.trim();
     const mobile=document.getElementById("mobile").value.trim();
@@ -193,12 +701,77 @@ function pay(){
 
 loadCart();
 if(!cart.length){render()}else{
-    fetch(COURIER_URL).then(r=>{if(!r.ok)throw new Error("Could not load courier.json");return r.json()})
-    .then(data=>{courierConfig=data;render()})
-    .catch(err=>{
-        console.error(err);
-        document.getElementById("content").innerHTML='<div class="card empty"><h2>Unable to load courier configuration</h2><p>Please check that <strong>data/courier.json</strong> exists in the repository.</p><a href="cart.html">Back to Cart</a></div>';
-    });
+    Promise.all([
+
+    fetch(COURIER_URL)
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error(
+                    "Could not load courier.json"
+                );
+            }
+
+            return response.json();
+
+        }),
+
+    fetch(COUPON_URL)
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error(
+                    "Could not load coupons.json"
+                );
+            }
+
+            return response.json();
+
+        })
+
+])
+.then(([courierData, couponData]) => {
+
+    courierConfig = courierData;
+
+    couponConfig = couponData;
+
+    render();
+
+})
+.catch(error => {
+
+    console.error(error);
+
+    document
+        .getElementById("content")
+        .innerHTML = `
+            <div class="card empty">
+
+                <h2>
+                    Unable to load checkout configuration
+                </h2>
+
+                <p>
+                    Please check that
+                    <strong>
+                        data/courier.json
+                    </strong>
+                    and
+                    <strong>
+                        data/coupons.json
+                    </strong>
+                    exist in the repository.
+                </p>
+
+                <a href="cart.html">
+                    Back to Cart
+                </a>
+
+            </div>
+        `;
+
+});
 }
 </script>
 </body>
