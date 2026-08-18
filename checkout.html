@@ -453,6 +453,125 @@ function applyCoupon(){
 
 }    
 
+function getFinalAmount(){
+
+    const t = totals();
+
+    const state =
+        document.getElementById("state").value;
+
+    const address =
+        document.getElementById("address").value;
+
+    const x =
+        courier(address, state);
+
+    const discount =
+        appliedCoupon
+            ? Number(appliedCoupon.DiscountValue || 0)
+            : 0;
+
+    return {
+
+        productTotal:
+            t.productTotal,
+
+        totalWeight:
+            t.totalWeight,
+
+        totalQuantity:
+            t.totalQuantity,
+
+        courierCharge:
+            x.charge,
+
+        courierDescription:
+            x.description,
+
+        couponCode:
+            appliedCoupon
+                ? appliedCoupon.Code
+                : "",
+
+        couponDiscount:
+            discount,
+
+        grandTotal:
+            Math.max(
+                0,
+                t.productTotal +
+                x.charge -
+                discount
+            )
+
+    };
+
+}
+
+
+function updateFinalReview(){
+
+    const review =
+        document.getElementById(
+            "reviewContent"
+        );
+
+    if (!review) return;
+
+    const final =
+        getFinalAmount();
+
+    const discountLine =
+        final.couponDiscount > 0
+
+        ? `
+            <div class="review-line discount">
+
+                <span>
+                    Coupon Code Discount
+                </span>
+
+                <strong>
+                    -₹${money(
+                        final.couponDiscount
+                    )}
+                </strong>
+
+            </div>
+          `
+
+        : "";
+
+
+    const grand =
+        document.getElementById(
+            "reviewGrand"
+        );
+
+    if (grand){
+
+        grand.textContent =
+            "₹" +
+            money(
+                final.grandTotal
+            );
+
+    }
+
+
+    const reviewDiscount =
+        document.getElementById(
+            "reviewDiscount"
+        );
+
+    if (reviewDiscount){
+
+        reviewDiscount.innerHTML =
+            discountLine;
+
+    }
+
+}    
     
 function showError(text){
     const m=document.getElementById("message");
@@ -489,14 +608,15 @@ function render(){
         <div class="card">
           <h2>Delivery Address</h2>
           <div class="form-grid">
-            <div class="field full"><label>Address <span class="required">*</span></label><textarea id="address" autocomplete="street-address" placeholder="House / Door No., Street, Area, Locality"></textarea><div class="hint">For the current tentative courier rules, include Rameshwaram in the address when applicable.</div></div>
+            <div class="field full"><label>Address <span class="required">*</span></label><textarea id="address" autocomplete="street-address" placeholder="House / Door No., Street, Area, Locality"></textarea>
+            <div class="hint">    Courier charges are based on the selected state and are charged once per bill.</div>
             <div class="field"><label>City / Town <span class="required">*</span></label><input id="city" autocomplete="address-level2"></div>
             <div class="field"><label>District</label><input id="district"></div>
             <div class="field"><label>State <span class="required">*</span></label><select id="state"><option value="">Select State</option>${states.map(s=>`<option>${s}</option>`).join("")}</select></div>
             <div class="field"><label>Pincode <span class="required">*</span></label><input id="pincode" maxlength="6" inputmode="numeric" autocomplete="postal-code" placeholder="6 digit pincode"></div>
           </div>
         </div>
-      </div>
+      
                <div class="card review" id="reviewCard">
 
             <h2>Final Order Review</h2>
@@ -581,6 +701,7 @@ function render(){
             </button>
 
         </div> 
+      </div>  
       <div class="card summary">
         <h2>Order Summary</h2>
         <div class="items">${items}</div>
@@ -613,14 +734,51 @@ function render(){
     Review Order Before Payment
 </button>
         <a class="back-cart" href="cart.html">← Back to Cart</a>
-        <div class="note" style="margin-top:15px">Current courier rates are tentative and are loaded from courier.json.</div>
-      </div>
+        <div class="note" style="margin-top:15px"> Courier charges are applied once per bill. Product prices are inclusive of GST.
+</div>
+        </div>
     </div>`;
 
-    document.getElementById("address").addEventListener("input",updateCourier);
-    document.getElementById("state").addEventListener("change",updateCourier);
-    document.getElementById("payButton").addEventListener("click",pay);
-}
+   document.getElementById("address")
+    .addEventListener("input", updateCourier);
+
+document.getElementById("state")
+    .addEventListener("change", updateCourier);
+
+document.getElementById("reviewButton")
+    .addEventListener("click", proceedToReview);
+
+document.getElementById("applyCoupon")
+    .addEventListener("click", applyCoupon);
+
+document.getElementById("confirmOrder")
+    .addEventListener("change", function(){
+
+        document.getElementById("payButton").disabled =
+            !this.checked;
+
+    });
+
+document.getElementById("editOrder")
+    .addEventListener("click", function(){
+
+        document
+            .getElementById("reviewCard")
+            .classList.remove("show");
+
+        document.getElementById("confirmOrder").checked =
+            false;
+
+        document.getElementById("payButton").disabled =
+            true;
+
+        document.getElementById("fullName")
+            .scrollIntoView({
+                behavior:"smooth",
+                block:"start"
+            });
+
+    });
 
 
 function updateCourier(){
@@ -691,88 +849,337 @@ function valid(){
     return true;
 }
 
-function pay(){
-    if(!valid())return;
+function proceedToReview(){
+
+    if (!valid()){
+        return;
+    }
+
+
     updateCourier();
-    const t=totals();
-    const x=courier(t.totalWeight,document.getElementById("address").value,document.getElementById("state").value);
-    alert("Checkout is ready.\n\nProduct Total: ₹"+money(t.productTotal)+"\nCourier: ₹"+money(x.charge)+"\nGrand Total: ₹"+money(t.productTotal+x.charge)+"\n\nRazorpay will be connected next.");
-}
 
-loadCart();
-if(!cart.length){render()}else{
-    Promise.all([
 
-    fetch(COURIER_URL)
-        .then(response => {
+    const final =
+        getFinalAmount();
 
-            if (!response.ok) {
-                throw new Error(
-                    "Could not load courier.json"
-                );
-            }
 
-            return response.json();
+    const name =
+        document
+            .getElementById("fullName")
+            .value.trim();
 
-        }),
+    const mobile =
+        document
+            .getElementById("mobile")
+            .value.trim();
 
-    fetch(COUPON_URL)
-        .then(response => {
+    const email =
+        document
+            .getElementById("email")
+            .value.trim();
 
-            if (!response.ok) {
-                throw new Error(
-                    "Could not load coupons.json"
-                );
-            }
+    const address =
+        document
+            .getElementById("address")
+            .value.trim();
 
-            return response.json();
+    const city =
+        document
+            .getElementById("city")
+            .value.trim();
 
-        })
+    const district =
+        document
+            .getElementById("district")
+            .value.trim();
 
-])
-.then(([courierData, couponData]) => {
+    const state =
+        document
+            .getElementById("state")
+            .value;
 
-    courierConfig = courierData;
+    const pincode =
+        document
+            .getElementById("pincode")
+            .value.trim();
 
-    couponConfig = couponData;
 
-    render();
+    let productLines = "";
 
-})
-.catch(error => {
 
-    console.error(error);
+    cart.forEach(item => {
 
-    document
-        .getElementById("content")
-        .innerHTML = `
-            <div class="card empty">
+        const quantity =
+            Number(
+                item.quantity || 1
+            );
 
-                <h2>
-                    Unable to load checkout configuration
-                </h2>
+        const price =
+            Number(
+                item.MRP || 0
+            );
 
-                <p>
-                    Please check that
-                    <strong>
-                        data/courier.json
-                    </strong>
-                    and
-                    <strong>
-                        data/coupons.json
-                    </strong>
-                    exist in the repository.
-                </p>
+        const amount =
+            price * quantity;
 
-                <a href="cart.html">
-                    Back to Cart
-                </a>
+
+        productLines += `
+
+            <div class="review-line">
+
+                <span>
+
+                    ${item.Name || "Solar Product"}
+
+                    <br>
+
+                    <small>
+                        Model:
+                        ${item.Model || "-"}
+                        × ${quantity}
+                        @ ₹${money(price)}
+                    </small>
+
+                </span>
+
+                <strong>
+                    ₹${money(amount)}
+                </strong>
 
             </div>
+
         `;
 
-});
+    });
+
+
+    document
+        .getElementById("reviewContent")
+        .innerHTML = `
+
+        <div class="review-section">
+
+            <div class="review-title">
+                Products
+            </div>
+
+            ${productLines}
+
+        </div>
+
+
+        <div class="review-section">
+
+            <div class="review-title">
+                Customer Details
+            </div>
+
+            <div class="review-line">
+                <span>Name</span>
+                <strong>${name}</strong>
+            </div>
+
+            <div class="review-line">
+                <span>Mobile</span>
+                <strong>${mobile}</strong>
+            </div>
+
+            <div class="review-line">
+                <span>Email</span>
+                <strong>${email}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="review-section">
+
+            <div class="review-title">
+                Delivery Address
+            </div>
+
+            <div class="review-address">
+
+                ${address}<br>
+
+                ${city}
+                ${district
+                    ? ", " + district
+                    : ""
+                }<br>
+
+                ${state} -
+                ${pincode}
+
+            </div>
+
+        </div>
+
+
+        <div class="review-section">
+
+            <div class="review-title">
+                Payment Summary
+            </div>
+
+
+            <div class="review-line">
+
+                <span>
+                    Product Total (incl. GST)
+                </span>
+
+                <strong>
+                    ₹${money(
+                        final.productTotal
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="review-line">
+
+                <span>
+                    Courier Charges
+                </span>
+
+                <strong>
+                    ₹${money(
+                        final.courierCharge
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div id="reviewDiscount">
+
+                ${
+                    final.couponDiscount > 0
+
+                    ? `
+                        <div class="review-line discount">
+
+                            <span>
+                                Coupon Code Discount
+                            </span>
+
+                            <strong>
+                                -₹${money(
+                                    final.couponDiscount
+                                )}
+                            </strong>
+
+                        </div>
+                      `
+
+                    : ""
+                }
+
+            </div>
+
+
+            <div class="final-total">
+
+                Amount Payable:
+
+                <span id="reviewGrand">
+
+                    ₹${money(
+                        final.grandTotal
+                    )}
+
+                </span>
+
+            </div>
+
+
+            <div class="note">
+
+                Product prices shown are inclusive
+                of GST. No additional GST is added.
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById("reviewCard")
+        .classList
+        .add("show");
+
+
+    document
+        .getElementById("reviewCard")
+        .scrollIntoView({
+
+            behavior:"smooth",
+
+            block:"start"
+
+        });
+
 }
+
+function pay(){
+
+    if (!valid()){
+        return;
+    }
+
+
+    if (
+        !document
+            .getElementById("confirmOrder")
+            .checked
+    ){
+
+        showError(
+            "Please confirm that the order details are correct before proceeding to payment."
+        );
+
+        return;
+
+    }
+
+
+    const final =
+        getFinalAmount();
+
+
+    alert(
+
+        "Final Order Confirmed.\n\n" +
+
+        "Product Total (incl. GST): ₹" +
+        money(final.productTotal) +
+
+        "\nCourier Charges: ₹" +
+        money(final.courierCharge) +
+
+        (
+            final.couponDiscount > 0
+
+            ? "\nCoupon Code Discount: -₹" +
+              money(final.couponDiscount)
+
+            : ""
+        ) +
+
+        "\nAmount Payable: ₹" +
+        money(final.grandTotal) +
+
+        "\n\nRazorpay will be connected next."
+
+    );
+
+}
+
+    
 </script>
 </body>
 </html>
