@@ -608,9 +608,26 @@ function render(){
         <div class="card">
           <h2>Delivery Address</h2>
           <div class="form-grid">
-            <div class="field full"><label>Address <span class="required">*</span></label><textarea id="address" autocomplete="street-address" placeholder="House / Door No., Street, Area, Locality"></textarea>
-            <div class="hint">    Courier charges are based on the selected state and are charged once per bill.</div>
-            <div class="field"><label>City / Town <span class="required">*</span></label><input id="city" autocomplete="address-level2"></div>
+            <div class="field full">
+
+    <label>
+        Address <span class="required">*</span>
+    </label>
+
+    <textarea
+        id="address"
+        autocomplete="street-address"
+        placeholder="House / Door No., Street, Area, Locality"></textarea>
+
+    <div class="hint">
+        Courier charges are based on the selected
+        state and are charged once per bill.
+    </div>
+
+</div>
+
+<div class="field">     
+            <label>City / Town <span class="required">*</span></label><input id="city" autocomplete="address-level2"></div>
             <div class="field"><label>District</label><input id="district"></div>
             <div class="field"><label>State <span class="required">*</span></label><select id="state"><option value="">Select State</option>${states.map(s=>`<option>${s}</option>`).join("")}</select></div>
             <div class="field"><label>Pincode <span class="required">*</span></label><input id="pincode" maxlength="6" inputmode="numeric" autocomplete="postal-code" placeholder="6 digit pincode"></div>
@@ -747,6 +764,9 @@ document.getElementById("state")
 
 document.getElementById("reviewButton")
     .addEventListener("click", proceedToReview);
+
+document.getElementById("payButton")
+    .addEventListener("click", pay);    
 
 document.getElementById("applyCoupon")
     .addEventListener("click", applyCoupon);
