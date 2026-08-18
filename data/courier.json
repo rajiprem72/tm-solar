@@ -1,23 +1,35 @@
 {
   "Currency": "INR",
-  "Base Weight": {
-    "Value": 500,
-    "Unit": "grams"
+  "BillingBasis": {
+    "Type": "Per Bill",
+    "Description": "Courier charge is applied once per bill/order and is not based on product weight."
   },
   "Rates": {
-    "Rameshwaram": {
-      "State": "Tamil Nadu",
-      "Rate": 50
-    },
     "Tamil Nadu": {
-      "Except": [
-        "Rameshwaram"
+      "States": [
+        "Tamil Nadu"
       ],
-      "Rate": 75
+      "Rate": 60
+    },
+    "Selected States": {
+      "States": [
+        "Kerala",
+        "Karnataka",
+        "Andhra Pradesh",
+        "Telangana"
+      ],
+      "Rate": 120
     },
     "Other States": {
       "Country": "India",
-      "Rate": 100
+      "Excluded States": [
+        "Tamil Nadu",
+        "Kerala",
+        "Karnataka",
+        "Andhra Pradesh",
+        "Telangana"
+      ],
+      "Rate": 250
     }
   }
 }
