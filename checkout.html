@@ -1198,7 +1198,115 @@ function pay(){
     );
 
 }
+}
 
+
+// ==========================================
+// INITIALIZE CHECKOUT PAGE
+// ==========================================
+
+async function initializeCheckout(){
+
+    try{
+
+        // Load cart from localStorage
+        loadCart();
+
+
+        // If cart is empty, show empty-cart message
+        if(!cart.length){
+
+            render();
+
+            return;
+
+        }
+
+
+        // Load courier configuration
+        try{
+
+            const courierResponse =
+                await fetch(COURIER_URL);
+
+            if(courierResponse.ok){
+
+                courierConfig =
+                    await courierResponse.json();
+
+            }else{
+
+                courierConfig = {};
+
+            }
+
+        }catch(error){
+
+            console.error(
+                "Courier JSON loading error:",
+                error
+            );
+
+            courierConfig = {};
+
+        }
+
+
+        // Load coupon configuration
+        try{
+
+            const couponResponse =
+                await fetch(COUPON_URL);
+
+            if(couponResponse.ok){
+
+                couponConfig =
+                    await couponResponse.json();
+
+            }else{
+
+                couponConfig = {
+                    Coupons:[]
+                };
+
+            }
+
+        }catch(error){
+
+            console.error(
+                "Coupon JSON loading error:",
+                error
+            );
+
+            couponConfig = {
+                Coupons:[]
+            };
+
+        }
+
+
+        // Finally render the checkout page
+        render();
+
+
+    }catch(error){
+
+        console.error(
+            "Checkout initialization error:",
+            error
+        );
+
+        showError(
+            "Unable to load the checkout page. Please refresh and try again."
+        );
+
+    }
+
+}
+
+
+// Start checkout
+initializeCheckout();    
     
 </script>
 </body>
