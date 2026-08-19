@@ -1172,33 +1172,409 @@ function pay(){
     const final =
         getFinalAmount();
 
+    async function pay(){
 
-    alert(
+    if (!valid()){
+        return;
+    }
 
-        "Final Order Confirmed.\n\n" +
+    const confirmation =
+        document.getElementById("confirmOrder");
 
-        "Product Total (incl. GST): ₹" +
-        money(final.productTotal) +
+    if (!confirmation.checked){
 
-        "\nCourier Charges: ₹" +
-        money(final.courierCharge) +
+        showError(
+            "Please confirm that the order details are correct before proceeding to payment."
+        );
 
-        (
-            final.couponDiscount > 0
+        return;
+    }
 
-            ? "\nCoupon Code Discount: -₹" +
-              money(final.couponDiscount)
+    const final =
+        getFinalAmount();
 
-            : ""
-        ) +
+    const payButton =
+        document.getElementById("payButton");
 
-        "\nAmount Payable: ₹" +
-        money(final.grandTotal) +
+    payButton.disabled = true;
 
-        "\n\nRazorpay will be connected next."
+    payButton.textContent =
+        "Creating Payment Order...";
 
-    );
 
+    try {
+
+        // -----------------------------------------
+        // Customer details
+        // -----------------------------------------
+
+        const customer = {
+
+            name:
+                document
+                    .getElementById("fullName")
+                    .value
+                    .trim(),
+
+            mobile:
+                document
+                    .getElementById("mobile")
+                    .value
+                    .trim(),
+
+            email:
+                document
+                    .getElementById("email")
+                    .value
+                    .trim(),
+
+            address:
+                document
+                    .getElementById("address")
+                    .value
+                    .trim(),
+
+            city:
+                document
+                    .getElementById("city")
+                    .value
+                    .trim(),
+
+            district:
+                document
+                    .getElementById("district")
+                    .value
+                    .trim(),
+
+            state:
+                document
+                    .getElementById("state")
+                    .value,
+
+            pincode:
+                document
+                    .getElementById("pincode")
+                    .value
+                    .trim()
+
+        };
+
+
+        // -----------------------------------------
+        // Products
+        // -----------------------------------------
+
+        const products =
+            cart.map(function(item){
+
+                return {
+
+                    Model:
+                        item.Model || "",
+
+                    Name:
+                        item.Name || "",
+
+                    Quantity:
+                        Number(
+                            item.quantity || 1
+                        ),
+
+                    MRP:
+                        Number(
+                            item.MRP || 0
+                        ),
+
+                    NetWeight:
+                        Number(
+                            item.NetWeight || 0
+                        )
+
+                };
+
+            });
+
+
+        // -----------------------------------------
+        // Data sent to Apps Script
+        // -----------------------------------------
+
+        const orderData = {
+
+            action:
+                "createRazorpayOrder",
+
+            customer:
+                customer,
+
+            products:
+                products,
+
+            totalQuantity:
+                final.totalQuantity,
+
+            totalWeight:
+                final.totalWeight,
+
+            productTotal:
+                final.productTotal,
+
+            courierCharge:
+                final.courierCharge,
+
+            couponCode:
+                final.couponCode,
+
+            couponDiscount:
+                final.couponDiscount,
+
+            grandTotal:
+                final.grandTotal
+
+        };
+
+
+        console.log(
+            "Sending order to Apps Script:",
+            orderData
+        );
+
+
+        // -----------------------------------------
+        // Call Google Apps Script
+        // -----------------------------------------
+
+        const response =
+            await fetch(
+                PAYMENT_API_URL,
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "text/plain;charset=utf-8"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            orderData
+                        )
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Apps Script response:",
+            result
+        );
+
+
+        if (!result.success){
+
+            throw new Error(
+                result.message ||
+                "Unable to create Razorpay order."
+            );
+
+        }
+
+
+        // -----------------------------------------
+        // Razorpay Order Details
+        // -----------------------------------------
+
+        const razorpayOrderId =
+            result.razorpayOrderId;
+
+        const razorpayKeyId =
+            result.razorpayKeyId;
+
+
+        if (!razorpayOrderId){
+
+            throw new Error(
+                "Razorpay Order ID was not received."
+            );
+
+        }
+
+
+        if (!razorpayKeyId){
+
+            throw new Error(
+                "Razorpay Key ID was not received."
+            );
+
+        }
+
+
+        // -----------------------------------------
+        // Open Razorpay Checkout
+        // -----------------------------------------
+
+        const options = {
+
+            key:
+                razorpayKeyId,
+
+            amount:
+                Number(
+                    result.amount
+                ),
+
+            currency:
+                "INR",
+
+            name:
+                "TM-SOLAR",
+
+            description:
+                "Solar Product Purchase",
+
+            order_id:
+                razorpayOrderId,
+
+
+            prefill: {
+
+                name:
+                    customer.name,
+
+                email:
+                    customer.email,
+
+                contact:
+                    customer.mobile
+
+            },
+
+
+            notes: {
+
+                source:
+                    "TM-SOLAR",
+
+                tm_order_id:
+                    result.tmOrderId
+
+            },
+
+
+            theme: {
+
+                color:
+                    "#123d2a"
+
+            },
+
+
+            handler:
+                function(paymentResponse){
+
+                    console.log(
+                        "Razorpay Payment Response:",
+                        paymentResponse
+                    );
+
+                    alert(
+                        "Payment submitted successfully.\n\n" +
+                        "Payment ID: " +
+                        paymentResponse.razorpay_payment_id +
+                        "\n\n" +
+                        "Your payment is being verified."
+                    );
+
+                },
+
+
+            modal: {
+
+                ondismiss:
+                    function(){
+
+                        payButton.disabled =
+                            false;
+
+                        payButton.textContent =
+                            "Proceed to Pay";
+
+                    }
+
+            }
+
+        };
+
+
+        const razorpay =
+            new Razorpay(options);
+
+
+        razorpay.on(
+            "payment.failed",
+            function(response){
+
+                console.error(
+                    "Razorpay Payment Failed:",
+                    response.error
+                );
+
+
+                alert(
+                    "Payment failed.\n\n" +
+                    (
+                        response.error.description ||
+                        "Please try again."
+                    )
+                );
+
+
+                payButton.disabled =
+                    false;
+
+                payButton.textContent =
+                    "Proceed to Pay";
+
+            }
+        );
+
+
+        razorpay.open();
+
+
+    }
+    catch(error){
+
+        console.error(
+            "Payment error:",
+            error
+        );
+
+
+        showError(
+            error.message ||
+            "Unable to start Razorpay payment."
+        );
+
+
+        payButton.disabled =
+            false;
+
+        payButton.textContent =
+            "Proceed to Pay";
+
+    }
+
+}
+    
 }
 
 
