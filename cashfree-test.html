@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>TM-SOLAR Cashfree Test</title>
+
+    <!-- Cashfree JavaScript SDK -->
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 14px 25px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #message {
+            margin-top: 25px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <h2>TM-SOLAR</h2>
+
+    <p>Cashfree Sandbox Payment Test</p>
+
+    <p>
+        <strong>Test Amount: ₹1</strong>
+    </p>
+
+    <button id="payButton">
+        Proceed to Pay ₹1
+    </button>
+
+    <div id="message"></div>
+
+
+<script>
+
+    // ==========================================
+    // Cashfree Sandbox
+    // ==========================================
+
+    const cashfree = Cashfree({
+        mode: "sandbox"
+    });
+
+
+    // ==========================================
+    // Payment Session ID
+    // ==========================================
+
+    const paymentSessionId =
+        "session_PiiDYSWD3kzdimnscxvmDg3xhWD6sOkS84_mTURveuaiJhKtWtZOK7CS5MTmO2yUT5qdb0lbaIfGBg6_vbAetnrX1N-gK8NnKLyS1y6ox3HsSylMcMOzAE3fWyvpqApaymentpayment";
+
+
+    // ==========================================
+    // Button
+    // ==========================================
+
+    document
+        .getElementById("payButton")
+        .addEventListener(
+            "click",
+            function () {
+
+                document
+                    .getElementById("message")
+                    .textContent =
+                    "Opening Cashfree Checkout...";
+
+
+                const checkoutOptions = {
+
+                    paymentSessionId:
+                        paymentSessionId,
+
+                    redirectTarget:
+                        "_self"
+
+                };
+
+
+                cashfree.checkout(
+                    checkoutOptions
+                );
+
+            }
+        );
+
+</script>
+
+</body>
+
+</html>
