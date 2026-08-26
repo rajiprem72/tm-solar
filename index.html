@@ -399,6 +399,93 @@
     }
 
 }
+/* =====================================================
+   VISITING CARD
+   ===================================================== */
+
+.visiting-card-wrapper {
+
+    max-width: 1100px;
+
+    margin: 35px auto 0;
+
+    text-align: center;
+
+}
+
+
+.visiting-card-link {
+
+    display: inline-block;
+
+    text-decoration: none;
+
+}
+
+
+.visiting-card-image {
+
+    display: block;
+
+    width: 100%;
+
+    max-width: 1100px;
+
+    height: auto;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, 0.15);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+
+}
+
+
+.visiting-card-image:hover {
+
+    transform: scale(1.015);
+
+    box-shadow:
+        0 12px 30px
+        rgba(0, 0, 0, 0.20);
+
+}
+
+
+.visiting-card-note {
+
+    margin-top: 12px;
+
+    color: #777;
+
+    font-size: 13px;
+
+}
+
+
+@media (max-width: 600px) {
+
+    .visiting-card-wrapper {
+
+        margin-top: 25px;
+
+    }
+
+
+    .visiting-card-image {
+
+        border-radius: 8px;
+
+    }
+
+}
+
+        
     </style>
 </head>
 
@@ -614,143 +701,38 @@
         </h2>
 
         <p class="section-intro">
-            We are happy to assist you with solar lighting products,
-            availability, pricing and enquiries.
+            For product enquiries, pricing and availability,
+            please feel free to contact us.
         </p>
 
+        <div class="visiting-card-wrapper">
 
-        <div class="contact-grid">
+            <a
+                href="images/visiting-card.png"
+                target="_blank"
+                rel="noopener"
+                class="visiting-card-link"
+            >
 
+                <img
+                    src="images/visiting-card.png"
+                    alt="TM-SOLAR Visiting Card - Senthil Kumar I"
+                    class="visiting-card-image"
+                >
 
-            <!-- =========================================
-                 ADDRESS
-                 ========================================= -->
+            </a>
 
-            <div class="contact-card">
-
-                <div class="contact-icon">
-                    📍
-                </div>
-
-                <h3>
-                    Our Location
-                </h3>
-
-                <p>
-                    <strong>TM-Solar</strong>
-                </p>
-
-                <p>
-                    Near by Dr. APJ Abdul Kalaam Memorial,<br>
-                    Peikarumbu,<br>
-                    Rameshwaram Main Road,<br>
-                    Thangatchi Madam,<br>
-                    Pin - 623529
-                </p>
-
-                <!-- Google Map will be added here later -->
-
-                <div class="map-placeholder">
-
-                    <span>
-                        Google Map
-                    </span>
-
-                    <small>
-                        Map will be added shortly
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <!-- =========================================
-                 PHONE
-                 ========================================= -->
-
-            <div class="contact-card">
-
-                <div class="contact-icon">
-                    📞
-                </div>
-
-                <h3>
-                    Phone
-                </h3>
-
-
-                <p>
-                    <strong>Office</strong><br>
-
-                    <a
-                        href="tel:+919025888093"
-                        class="contact-link"
-                    >
-                        +91 90258 88093
-                    </a>
-
-                </p>
-
-
-                <p>
-                    <strong>Mobile</strong><br>
-
-                    <a
-                        href="tel:+919894535526"
-                        class="contact-link"
-                    >
-                        +91 98945 35526
-                    </a>
-
-                </p>
-
-
-                <p class="contact-note">
-                    Click a number to call us.
-                </p>
-
-            </div>
-
-
-            <!-- =========================================
-                 EMAIL
-                 ========================================= -->
-
-            <div class="contact-card">
-
-                <div class="contact-icon">
-                    ✉️
-                </div>
-
-                <h3>
-                    Email
-                </h3>
-
-                <p>
-
-                    <a
-                        href="mailto:thiruchendurmuruganagency@gmail.com"
-                        class="contact-link email-link"
-                    >
-                        thiruchendurmuruganagency@gmail.com
-                    </a>
-
-                </p>
-
-                <p class="contact-note">
-                    Click the email address to
-                    compose a message.
-                </p>
-
-            </div>
-
+            <p class="visiting-card-note">
+                Click the visiting card to view it in full size.
+            </p>
 
         </div>
 
     </div>
 
 </section>
+
+    
 <footer>
     <p>© 2026 TM-Solar. All Rights Reserved.</p>
     <p>Solar Lighting Solutions</p>
