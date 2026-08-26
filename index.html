@@ -399,6 +399,8 @@
     }
 
 }
+
+
 /* =====================================================
    VISITING CARD
    ===================================================== */
@@ -409,16 +411,14 @@
 
     margin: 35px auto 0;
 
-    text-align: center;
-
 }
 
 
-.visiting-card-link {
+.visiting-card {
 
-    display: inline-block;
+    position: relative;
 
-    text-decoration: none;
+    width: 100%;
 
 }
 
@@ -429,8 +429,6 @@
 
     width: 100%;
 
-    max-width: 1100px;
-
     height: auto;
 
     border-radius: 14px;
@@ -439,34 +437,91 @@
         0 8px 25px
         rgba(0, 0, 0, 0.15);
 
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
+}
+
+
+/* =====================================================
+   INVISIBLE CLICKABLE AREAS
+   ===================================================== */
+
+.card-hotspot {
+
+    position: absolute;
+
+    display: block;
+
+    z-index: 10;
+
+    background: transparent;
+
+    cursor: pointer;
 
 }
 
 
-.visiting-card-image:hover {
+/* Office number */
 
-    transform: scale(1.015);
+.office-hotspot {
 
-    box-shadow:
-        0 12px 30px
-        rgba(0, 0, 0, 0.20);
+    right: 4%;
+
+    top: 36%;
+
+    width: 42%;
+
+    height: 8%;
+
+}
+
+
+/* Mobile number */
+
+.mobile-hotspot {
+
+    right: 4%;
+
+    top: 46%;
+
+    width: 42%;
+
+    height: 8%;
 
 }
 
 
-.visiting-card-note {
+/* Email */
 
-    margin-top: 12px;
+.email-hotspot {
 
-    color: #777;
+    right: 4%;
 
-    font-size: 13px;
+    top: 56%;
+
+    width: 45%;
+
+    height: 10%;
 
 }
 
+
+/* Website */
+
+.website-hotspot {
+
+    right: 4%;
+
+    top: 67%;
+
+    width: 35%;
+
+    height: 8%;
+
+}
+
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
 
 @media (max-width: 600px) {
 
@@ -476,7 +531,6 @@
 
     }
 
-
     .visiting-card-image {
 
         border-radius: 8px;
@@ -484,7 +538,6 @@
     }
 
 }
-
         
     </style>
 </head>
@@ -692,6 +745,7 @@
     </div>
 </section>
 
+
 <section id="contact" class="contact">
 
     <div class="container">
@@ -700,19 +754,9 @@
             Contact TM-Solar
         </h2>
 
-        <p class="section-intro">
-            For product enquiries, pricing and availability,
-            please feel free to contact us.
-        </p>
-
         <div class="visiting-card-wrapper">
 
-            <a
-                href="images/visiting-card.png"
-                target="_blank"
-                rel="noopener"
-                class="visiting-card-link"
-            >
+            <div class="visiting-card">
 
                 <img
                     src="images/visiting-card.png"
@@ -720,18 +764,59 @@
                     class="visiting-card-image"
                 >
 
-            </a>
 
-            <p class="visiting-card-note">
-                Click the visiting card to view it in full size.
-            </p>
+                <!-- =====================================
+                     OFFICE PHONE
+                     ===================================== -->
+
+                <a
+                    href="tel:+919025888093"
+                    class="card-hotspot office-hotspot"
+                    aria-label="Call TM-Solar Office"
+                ></a>
+
+
+                <!-- =====================================
+                     MOBILE PHONE
+                     ===================================== -->
+
+                <a
+                    href="tel:+919894535526"
+                    class="card-hotspot mobile-hotspot"
+                    aria-label="Call TM-Solar Mobile"
+                ></a>
+
+
+                <!-- =====================================
+                     EMAIL
+                     ===================================== -->
+
+                <a
+                    href="mailto:thiruchendurmuruganagencies@gmail.com"
+                    class="card-hotspot email-hotspot"
+                    aria-label="Email TM-Solar"
+                ></a>
+
+
+                <!-- =====================================
+                     WEBSITE
+                     ===================================== -->
+
+                <a
+                    href="https://tm-solar.in"
+                    target="_blank"
+                    rel="noopener"
+                    class="card-hotspot website-hotspot"
+                    aria-label="Visit TM-Solar website"
+                ></a>
+
+            </div>
 
         </div>
 
     </div>
 
-</section>
-
+</section>    
     
 <footer>
     <p>© 2026 TM-Solar. All Rights Reserved.</p>
