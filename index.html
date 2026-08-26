@@ -218,6 +218,187 @@
                 font-size: 30px;
             }
         }
+
+        /* =====================================================
+   CONTACT SECTION
+   ===================================================== */
+
+.contact {
+    text-align: center;
+    background: #ffffff;
+}
+
+
+.contact-grid {
+
+    max-width: 1050px;
+
+    margin: 35px auto 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+
+}
+
+
+.contact-card {
+
+    background: #f8faf8;
+
+    border: 1px solid #e1e7e2;
+
+    border-radius: 12px;
+
+    padding: 28px 22px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0, 0, 0, 0.05);
+
+}
+
+
+.contact-icon {
+
+    font-size: 34px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.contact-card h3 {
+
+    color: #123d2a;
+
+    font-size: 20px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.contact-card p {
+
+    color: #555;
+
+    font-size: 15px;
+
+    line-height: 1.8;
+
+    margin-bottom: 15px;
+
+}
+
+
+.contact-link {
+
+    color: #123d2a;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    text-decoration: none;
+
+}
+
+
+.contact-link:hover {
+
+    text-decoration: underline;
+
+}
+
+
+.email-link {
+
+    word-break: break-word;
+
+}
+
+
+.contact-note {
+
+    font-size: 13px !important;
+
+    color: #777 !important;
+
+    margin-top: 15px;
+
+}
+
+
+/* =====================================================
+   GOOGLE MAP PLACEHOLDER
+   ===================================================== */
+
+.map-placeholder {
+
+    margin-top: 20px;
+
+    min-height: 100px;
+
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e8eee9,
+            #dce7df
+        );
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #123d2a;
+
+}
+
+
+.map-placeholder span {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+}
+
+
+.map-placeholder small {
+
+    margin-top: 5px;
+
+    color: #666;
+
+}
+
+
+/* =====================================================
+   CONTACT MOBILE
+   ===================================================== */
+
+@media (max-width: 800px) {
+
+    .contact-grid {
+
+        grid-template-columns:
+            1fr;
+
+        max-width: 600px;
+
+    }
+
+}
     </style>
 </head>
 
