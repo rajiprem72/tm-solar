@@ -538,6 +538,109 @@
     }
 
 }
+
+/* =====================================================
+   TM-SOLAR OUTLET SECTION
+   ===================================================== */
+
+.outlet-section {
+    background: #f7f9f7;
+}
+
+.outlet-grid {
+    max-width: 1100px;
+    margin: 35px auto 0;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.outlet-image-wrapper {
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.outlet-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.outlet-content {
+    padding: 10px;
+}
+
+.outlet-content h3 {
+    color: #123d2a;
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+.outlet-content p {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.outlet-points {
+    margin: 20px 0;
+    padding: 0;
+    list-style: none;
+}
+
+.outlet-points li {
+    margin-bottom: 12px;
+    color: #333;
+    font-size: 15px;
+}
+
+.outlet-points li::before {
+    content: "✓";
+    color: #123d2a;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.outlet-button {
+    display: inline-block;
+    background: #123d2a;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.outlet-button:hover {
+    background: #1d6042;
+}
+
+
+/* Outlet mobile layout */
+
+@media (max-width: 800px) {
+
+    .outlet-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .outlet-content {
+        text-align: center;
+    }
+
+    .outlet-content h3 {
+        font-size: 26px;
+    }
+
+    .outlet-points {
+        text-align: left;
+        display: inline-block;
+    }
+}
         
     </style>
 </head>
@@ -574,6 +677,94 @@
         <a href="products.html" class="button">Explore Our Products</a>
     </div>
 </section>
+
+
+<!-- =====================================================
+     TM-SOLAR OUTLET
+     ===================================================== -->
+
+<section class="outlet-section">
+
+    <div class="container">
+
+        <h2 class="section-title">
+            Visit Our Solar Outlet
+        </h2>
+
+        <p class="section-intro">
+            Explore our solar lighting solutions and get expert guidance
+            for your residential, commercial and outdoor lighting needs.
+        </p>
+
+
+        <div class="outlet-grid">
+
+            <!-- OUTLET IMAGE -->
+
+            <div class="outlet-image-wrapper">
+
+                <img
+                    src="images/tm-solar-outlet.jpg"
+                    alt="TM-Solar Solar Lighting Outlet"
+                    class="outlet-image"
+                >
+
+            </div>
+
+
+            <!-- OUTLET INFORMATION -->
+
+            <div class="outlet-content">
+
+                <h3>
+                    TM-Solar
+                </h3>
+
+                <p>
+                    Visit our solar lighting outlet to explore a range of
+                    energy-efficient lighting solutions for different
+                    outdoor and residential applications.
+                </p>
+
+                <ul class="outlet-points">
+
+                    <li>
+                        Solar Street Lights
+                    </li>
+
+                    <li>
+                        Solar Garden & UFO Lights
+                    </li>
+
+                    <li>
+                        Solar Flood Lamps
+                    </li>
+
+                    <li>
+                        Solar Wall, Pillar & Bollard Lamps
+                    </li>
+
+                    <li>
+                        Expert Installation Support
+                    </li>
+
+                </ul>
+
+                <a
+                    href="#contact"
+                    class="outlet-button"
+                >
+                    Contact TM-Solar
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
 
 <section id="about" class="about">
     <div class="container">
