@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "TM-SOLAR",
+    "type": "Solar Lights ",
+    "address": "Near by Dr.APJ Abdul Kalaam Memorial",
+    "city": "Rameshwaram",
+    "district": "Ramanathapuram",
+    "state": "Tamil Nadu",
+    "pincode": "623529",
+    "country": "India",
+    "phone": ["+91 98945 35526","+91 90258 88093"],
+    "email": "thiruchendurmuruganagencies@gmail.com",
+    "website": "https://tm-solar.in/",
+    "latitude": 9.288352990933202, 
+    "longitude": 79.27093120885749
+  }
+]
