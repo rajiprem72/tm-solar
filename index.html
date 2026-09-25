@@ -648,6 +648,61 @@
         display: inline-block;
     }
 }
+
+        /* =====================================================
+   TM-SOLAR INTRO VIDEO
+   ===================================================== */
+
+.intro-video-section {
+    background: #ffffff;
+    padding: 45px 20px;
+    text-align: center;
+}
+
+.intro-video-section h2 {
+    color: #123d2a;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.intro-video-section p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+.intro-video-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.intro-video {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    background: #000;
+}
+
+@media (max-width: 520px) {
+
+    .intro-video-section {
+        padding: 35px 15px;
+    }
+
+    .intro-video-section h2 {
+        font-size: 26px;
+    }
+
+    .intro-video {
+        max-width: 100%;
+        border-radius: 10px;
+    }
+}
         
     </style>
 </head>
@@ -684,7 +739,43 @@
         <a href="products.html" class="button">Explore Our Products</a>
     </div>
 </section>
+<!-- =====================================================
+     TM-SOLAR INTRO VIDEO
+     ===================================================== -->
 
+<section class="intro-video-section">
+
+    <div class="container">
+
+        <h2>Welcome to TM-SOLAR</h2>
+
+        <p>
+            Discover our solar lighting solutions for your home,
+            business and outdoor lighting needs.
+        </p>
+
+        <div class="intro-video-wrapper">
+
+            <video
+                class="intro-video"
+                controls
+                playsinline
+                preload="metadata"
+                poster="images/tm-solar-outlet.jpg"
+            >
+                <source
+                    src="videos/intro.mp4"
+                    type="video/mp4"
+                >
+
+                Your browser does not support the video tag.
+            </video>
+
+        </div>
+
+    </div>
+
+</section>
 
 <!-- =====================================================
      TM-SOLAR OUTLET
